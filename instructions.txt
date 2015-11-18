@@ -1,0 +1,13 @@
+TODO
+* implement builder(with director!) and plug it into ArithmeticExpressionCreator 
+* implement not implemented methods for composite in package arithmetic
+* implement post and in order iterators in package iterator and plug it into ArithmeticExpressionPrinter
+
+* all tests must pass and they can't be modified
+
+restrictions
+* you can't use instance of
+
+info
+* you can decide where to implement which method within ArithmeticExpression composite
+(you can extract some methods to superclasses, if you find it appropriate)
