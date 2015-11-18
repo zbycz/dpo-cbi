@@ -1,20 +1,14 @@
 package cz.fit.dpo.cbi.arithmetic;
 
-import cz.fit.dpo.cbi.arithmetic.elements.AddOperation;
-import cz.fit.dpo.cbi.arithmetic.elements.CloseBracketOperation;
-import cz.fit.dpo.cbi.arithmetic.elements.ExpressionElement;
-import cz.fit.dpo.cbi.arithmetic.elements.OpenBracketOperation;
+import cz.fit.dpo.cbi.arithmetic.elements.*;
+
 import java.util.Iterator;
 
 /**
  * Represents + operation
  */
 public class AddOperator extends BinaryOperator {
-    boolean iteratedSelf = false;
-    boolean iteratedFirst = false;
-    boolean iteratedSecond = false;
-    boolean printedOpenBracket = false;
-    boolean printedCloseBracket = false;
+
 
     public AddOperator(ArithmeticExpression firstOperand, ArithmeticExpression secondOperand) {
         super(firstOperand, secondOperand);
@@ -32,10 +26,20 @@ public class AddOperator extends BinaryOperator {
 
         return new Iterator<ExpressionElement>() {
             ArithmeticExpression expression = ex;
+            boolean iteratedSelf = false;
+            boolean iteratedFirst = false;
+            boolean iteratedSecond = false;
+            boolean printedOpenBracket = false;
+            boolean printedCloseBracket = false;
+            Iterator<ExpressionElement> firstIterator;
+            Iterator<ExpressionElement> secondIterator;
 
             @Override
             public boolean hasNext() {
-                return !(iteratedSelf || iteratedFirst || iteratedSecond || printedCloseBracket);
+                if(iteratedSelf && iteratedFirst && iteratedSecond && printedCloseBracket){
+                    return false;
+                }
+                return true;
             }
 
             @Override
@@ -50,12 +54,16 @@ public class AddOperator extends BinaryOperator {
                 }
 
                 if(!iteratedFirst) {
-                    boolean has = getFirstOperand().getInOrderIterator().hasNext();
+                    if(firstIterator == null) {
+                        firstIterator = getFirstOperand().getInOrderIterator();
+                    }
+
+                    boolean has = firstIterator.hasNext();
                     if(!has) { //už nemá, tak jsme ho proiterovali
                         iteratedFirst = true;
                     }
                     else {
-                        return getFirstOperand().getInOrderIterator().next();
+                        return firstIterator.next();
                     }
                 }
 
@@ -66,17 +74,21 @@ public class AddOperator extends BinaryOperator {
                 }
 
                 if(!iteratedSecond) {
-                    boolean has = getSecondOperand().getInOrderIterator().hasNext();
+                    if (secondIterator == null){
+                        secondIterator = getSecondOperand().getInOrderIterator();
+                    }
+
+                    boolean has = secondIterator.hasNext();
                     if(!has) { //už nemá, tak jsme ho proiterovali
                         iteratedSecond = true;
                     }
                     else {
-                        return getSecondOperand().getInOrderIterator().next();
+                        return secondIterator.next();
                     }
                 }
 
                 //TODO tady závorku
-                if(iteratedSecond && !printedCloseBracket) {
+                if(!printedCloseBracket) {
                     printedCloseBracket = true;
                     return new CloseBracketOperation();
                 }
@@ -93,15 +105,18 @@ public class AddOperator extends BinaryOperator {
 
         return new Iterator<ExpressionElement>() {
             ArithmeticExpression expression = ex;
+            boolean iteratedSelf = false;
             boolean iteratedFirst = false;
             boolean iteratedSecond = false;
+            Iterator<ExpressionElement> firstIterator;
+            Iterator<ExpressionElement> secondIterator;
 
             @Override
             public boolean hasNext() {
-                if (!iteratedSelf && !iteratedFirst && !iteratedSecond) {
-                    return true;
+                if (iteratedSelf && iteratedFirst && iteratedSecond) {
+                    return false;
                 }
-                return false;
+                return true;
             }
 
             @Override
@@ -109,23 +124,31 @@ public class AddOperator extends BinaryOperator {
 
                 // Iterujeme nad prvním
                 if(!iteratedFirst) {
-                    boolean has = getFirstOperand().getPostOrderIterator().hasNext();
+                    if(firstIterator == null) {
+                        firstIterator = getFirstOperand().getPostOrderIterator();
+                    }
+
+                    boolean has = firstIterator.hasNext();
                     if(!has) { //už nemá, tak jsme ho proiterovali
                         iteratedFirst = true;
                     }
                     else {
-                        return getFirstOperand().getPostOrderIterator().next();
+                        return firstIterator.next();
                     }
                 }
 
                 // Iterujeme nad druhým
                 if(!iteratedSecond) {
-                    boolean has = getSecondOperand().getPostOrderIterator().hasNext();
+                    if (secondIterator == null){
+                        secondIterator = getSecondOperand().getPostOrderIterator();
+                    }
+
+                    boolean has = secondIterator.hasNext();
                     if(!has) { //už nemá, tak jsme ho proiterovali
-                        iteratedFirst = true;
+                        iteratedSecond = true;
                     }
                     else {
-                        return getSecondOperand().getPostOrderIterator().next();
+                        return secondIterator.next();
                     }
                 }
 
