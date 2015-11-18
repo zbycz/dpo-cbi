@@ -15,11 +15,9 @@ public class ArithmeticExpressionCreator {
      */
     public ArithmeticExpression createExpressionFromRPN(String input) {
         ExpressionBuilder builder = new ArithmeticExpressionBuilder();
-
         AEBuilderDirector director = new AEBuilderDirector(builder);
+        
         director.constructFromRPN(input);
-
-
 
         return builder.getExpression();
     }

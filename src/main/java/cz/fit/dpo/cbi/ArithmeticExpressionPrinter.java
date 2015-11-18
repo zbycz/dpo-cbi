@@ -2,6 +2,7 @@ package cz.fit.dpo.cbi;
 
 import cz.fit.dpo.cbi.arithmetic.ArithmeticExpression;
 import cz.fit.dpo.cbi.arithmetic.elements.ExpressionElement;
+import cz.fit.dpo.cbi.arithmetic.iterator.InOrderIterator;
 
 import java.util.Iterator;
 

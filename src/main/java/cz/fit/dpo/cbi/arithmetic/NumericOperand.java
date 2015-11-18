@@ -12,6 +12,7 @@ import java.util.Iterator;
 public class NumericOperand extends ArithmeticExpression {
 
     private Integer value;
+    boolean iteratedSelf = false;
 
     public NumericOperand(Integer value) {
         this.value = value;
@@ -28,15 +29,10 @@ public class NumericOperand extends ArithmeticExpression {
 
         return new Iterator<ExpressionElement>() {
             ArithmeticExpression expression = ex;
-            boolean iteratedSelf = false;
 
             @Override
             public boolean hasNext() {
-                if (!iteratedSelf) {
-                    return true;
-                }
-
-                return false;
+                return !iteratedSelf;
             }
 
             @Override
@@ -53,7 +49,26 @@ public class NumericOperand extends ArithmeticExpression {
 
     @Override
     public Iterator<ExpressionElement> getPostOrderIterator() {
-        return null;
+        final ArithmeticExpression ex = this;
+
+        return new Iterator<ExpressionElement>() {
+            ArithmeticExpression expression = ex;
+
+            @Override
+            public boolean hasNext() {
+                return !iteratedSelf;
+            }
+
+            @Override
+            public ExpressionElement next() {
+                if (!iteratedSelf) {
+                    iteratedSelf = true;
+                    return new Number(value);
+                }
+
+                throw new IllegalStateException("NumericOperand cant have another next()");
+            }
+        };
     }
 
 
