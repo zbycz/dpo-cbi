@@ -26,28 +26,20 @@ public class AEBuilderDirector {
 
         String[] split = input.split(" ");
 
-        Stack<ArithmeticExpression> stack = new Stack<>();
-
         for (String s : split) {
             if(s.matches("^\\d+$")) {
-                stack.push(builder.createNumericOperand(Integer.parseInt(s)));
+                builder.createNumericOperand(Integer.parseInt(s));
             }
+            else if (s.equals("+")) {
+                builder.createAddOperator();
+            }
+
+            else if (s.equals("-")) {
+                builder.createSubstractOperator();
+            }
+
             else {
-                ArithmeticExpression p2 = stack.pop();
-                ArithmeticExpression p1 = stack.pop();
-
-                if (s.equals("+")) {
-                    stack.push(builder.createAddOperator(p1,p2));
-                }
-
-                else if (s.equals("-")) {
-                    stack.push(builder.createSubstractOperator(p1, p2));
-                }
-
-                else {
-                    throw new IllegalArgumentException("Unknown operator: "+s);
-                }
-
+                throw new IllegalArgumentException("Unknown operator: "+s);
             }
         }
     }

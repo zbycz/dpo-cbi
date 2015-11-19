@@ -11,11 +11,11 @@ import cz.fit.dpo.cbi.arithmetic.SubstractOperator;
 public interface ExpressionBuilder {
 
 
-    public NumericOperand createNumericOperand(int x);
+    public void createNumericOperand(int x);
 
-    public AddOperator createAddOperator(ArithmeticExpression a, ArithmeticExpression b);
+    public void createAddOperator();
 
-    public SubstractOperator createSubstractOperator(ArithmeticExpression a, ArithmeticExpression b);
+    public void createSubstractOperator();
 
     ArithmeticExpression getExpression();
 }

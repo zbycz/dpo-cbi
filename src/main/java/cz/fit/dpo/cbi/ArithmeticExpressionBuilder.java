@@ -5,39 +5,44 @@ import cz.fit.dpo.cbi.arithmetic.ArithmeticExpression;
 import cz.fit.dpo.cbi.arithmetic.NumericOperand;
 import cz.fit.dpo.cbi.arithmetic.SubstractOperator;
 
+import javax.lang.model.type.ArrayType;
+import java.util.Stack;
+
 /**
  * Created by Pavel on 18.11.2015.
  */
 public class ArithmeticExpressionBuilder implements ExpressionBuilder {
 
 
-    private ArithmeticExpression root;
-
+    private Stack<ArithmeticExpression> stack  = new Stack<ArithmeticExpression>();
 
     @Override
-    public NumericOperand createNumericOperand(int x) {
+    public void createNumericOperand(int x) {
         NumericOperand numericOperand = new NumericOperand(x);
-        root = numericOperand;
-        return numericOperand;
+        stack.push(numericOperand);
     }
 
     @Override
-    public AddOperator createAddOperator(ArithmeticExpression a, ArithmeticExpression b) {
+    public void createAddOperator() {
+        ArithmeticExpression b = stack.pop();
+        ArithmeticExpression a = stack.pop();
+
         AddOperator addOperator = new AddOperator(a, b);
-        root = addOperator;
-        return addOperator;
+        stack.push(addOperator);
     }
 
     @Override
-    public SubstractOperator createSubstractOperator(ArithmeticExpression a, ArithmeticExpression b) {
+    public void createSubstractOperator() {
+        ArithmeticExpression b = stack.pop();
+        ArithmeticExpression a = stack.pop();
+
         SubstractOperator substractOperator = new SubstractOperator(a, b);
-        root = substractOperator;
-        return substractOperator;
+        stack.push(substractOperator);
     }
 
     @Override
     public ArithmeticExpression getExpression() {
-        return root;
+        return stack.pop();
     }
 
 
